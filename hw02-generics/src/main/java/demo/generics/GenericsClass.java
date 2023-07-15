@@ -3,6 +3,7 @@ package demo.generics;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("all")
 public class GenericsClass<K, V> {
 
     private final Map<K, V> map = new HashMap<>();

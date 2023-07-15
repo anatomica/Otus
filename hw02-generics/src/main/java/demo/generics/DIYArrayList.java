@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+@SuppressWarnings("all")
 public class DIYArrayList<E> implements List<E> {
     @Override
     public int size() {

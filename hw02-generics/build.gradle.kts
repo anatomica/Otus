@@ -3,6 +3,8 @@ plugins {
 }
 
 dependencies {
+    implementation("org.apache.commons:commons-lang3")
+    implementation("org.apache.commons:commons-collections4")
     testImplementation ("org.junit.jupiter:junit-jupiter-api")
     testImplementation ("org.junit.jupiter:junit-jupiter-engine")
     testImplementation ("org.assertj:assertj-core")

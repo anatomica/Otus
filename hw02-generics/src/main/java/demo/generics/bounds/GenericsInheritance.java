@@ -6,6 +6,7 @@ import demo.generics.bounds.entries.Cat;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("all")
 public class GenericsInheritance {
 
     public static void main( String[] args ) {

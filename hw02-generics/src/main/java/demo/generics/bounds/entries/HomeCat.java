@@ -2,6 +2,7 @@ package demo.generics.bounds.entries;
 
 import java.util.Objects;
 
+@SuppressWarnings("all")
 public class HomeCat extends Cat {
     private final String name;
 

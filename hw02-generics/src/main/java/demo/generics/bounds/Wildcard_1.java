@@ -8,6 +8,7 @@ import demo.generics.bounds.entries.WildCat;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("all")
 public class Wildcard_1 {
 
     public static void main( String[] args ) {

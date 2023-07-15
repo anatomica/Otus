@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("all")
 public class WildcardPECS {
 
     public static void main( String[] args ) {

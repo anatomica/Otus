@@ -5,6 +5,7 @@ import demo.generics.bounds.entries.Cat;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("all")
 public class Wildcard_2 {
 
     public static void main( String[] args ) {

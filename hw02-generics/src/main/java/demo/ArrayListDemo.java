@@ -7,6 +7,7 @@ import demo.generics.bounds.entries.WildCat;
 
 import java.util.*;
 
+@SuppressWarnings("all")
 public class ArrayListDemo {
     public static void main( String[] args ) {
 

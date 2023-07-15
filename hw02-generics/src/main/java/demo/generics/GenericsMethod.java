@@ -1,5 +1,6 @@
 package demo.generics;
 
+@SuppressWarnings("all")
 public class GenericsMethod {
 
     public static void main( String[] args ) {

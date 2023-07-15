@@ -3,7 +3,7 @@ package demo.generics;
 import java.time.LocalTime;
 import java.util.*;
 
-
+@SuppressWarnings("all")
 public class Intro {
 
     public static void main( String[] args ) {

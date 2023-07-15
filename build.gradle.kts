@@ -33,6 +33,8 @@ allprojects {
     val guava: String by project
     val datatype: String by project
     val lombok: String by project
+    val commonsLang3: String by project
+    val commonsCollections4: String by project
 
     apply(plugin = "io.spring.dependency-management")
     dependencyManagement {
@@ -45,6 +47,8 @@ allprojects {
             dependency("com.google.guava:guava:$guava")
             dependency("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$datatype")
             dependency("org.projectlombok:lombok:$lombok")
+            dependency("org.apache.commons:commons-lang3:$commonsLang3")
+            dependency("org.apache.commons:commons-collections4:$commonsCollections4")
         }
     }
 
