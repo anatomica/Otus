@@ -6,8 +6,8 @@ plugins {
 }
 
 dependencies {
-    implementation ("com.google.guava:guava")
-    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")
+    implementation("com.google.guava:guava")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 }
 
 tasks {

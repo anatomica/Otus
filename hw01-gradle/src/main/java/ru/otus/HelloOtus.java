@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public class HelloOtus {
 
     private Integer number;
@@ -56,5 +56,4 @@ public class HelloOtus {
             return helloOtus;
         }
     }
-
 }
