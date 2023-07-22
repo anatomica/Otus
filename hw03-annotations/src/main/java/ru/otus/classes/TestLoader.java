@@ -10,9 +10,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Comparator.comparing;
 
@@ -26,29 +24,25 @@ public class TestLoader {
     public static <T> void loadTest(Class<T> clazz) {
         Class<TestClass> testClass = (Class<TestClass>) clazz;
         Statistics statistics = new Statistics(0, 0, 0);
-
-        AtomicReference<Method> methodBefore = new AtomicReference<>();
-        AtomicReference<Method> methodAfter = new AtomicReference<>();
         List<Method> tests = new ArrayList<>();
+        Method methodBefore = null;
+        Method methodAfter = null;
 
         for (Method method : testClass.getDeclaredMethods()) {
             Annotation[] annotations = method.getDeclaredAnnotations();
-            Arrays.stream(annotations)
-                    .filter(a -> a instanceof Before)
-                    .findFirst()
-                    .ifPresent(a -> methodBefore.set(method));
-            Arrays.stream(annotations)
-                    .filter(a -> a instanceof Test)
-                    .findFirst()
-                    .ifPresent(a -> tests.add(method));
-            Arrays.stream(annotations)
-                    .filter(a -> a instanceof After)
-                    .findFirst()
-                    .ifPresent(a -> methodAfter.set(method));
+            for (Annotation annotation : annotations) {
+                if (annotation instanceof Before) {
+                    methodBefore = method;
+                } else if (annotation instanceof Test) {
+                    tests.add(method);
+                } else if (annotation instanceof After) {
+                    methodAfter = method;
+                }
+            }
         }
 
         tests.sort(comparing(Method::getName));
-        Statistics stats = invokeTests(methodBefore.get(), tests, methodAfter.get(), testClass, statistics);
+        Statistics stats = invokeTests(methodBefore, tests, methodAfter, testClass, statistics);
         printStatistics(stats);
     }
 
@@ -66,8 +60,10 @@ public class TestLoader {
             }
 
             try {
-                methodBefore.setAccessible(true);
-                methodBefore.invoke(newInstance);
+                if (methodBefore != null) {
+                    methodBefore.setAccessible(true);
+                    methodBefore.invoke(newInstance);
+                }
             } catch (IllegalAccessException | InvocationTargetException ignored) {
             }
             try {
@@ -81,8 +77,10 @@ public class TestLoader {
                 statistics.setTotal(statistics.getTotal() + 1);
             }
             try {
-                methodAfter.setAccessible(true);
-                methodAfter.invoke(newInstance);
+                if (methodAfter != null) {
+                    methodAfter.setAccessible(true);
+                    methodAfter.invoke(newInstance);
+                }
             } catch (IllegalAccessException | InvocationTargetException ignored) {
             }
         });
