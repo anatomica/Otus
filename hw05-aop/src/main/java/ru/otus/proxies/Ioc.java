@@ -9,6 +9,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,39 +17,47 @@ import java.util.stream.Collectors;
 import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-@SuppressWarnings("all")
 public class Ioc {
 
     private Ioc() {
     }
 
-    public static TestLogging createProxyClass() {
+    @SuppressWarnings("unchecked")
+    public static <T> T createProxyClass() {
         InvocationHandler handler = new MyInvocationHandler(new TestLoggingImpl());
-        return (TestLogging)
-                Proxy.newProxyInstance(
-                        Ioc.class.getClassLoader(),
-                        new Class<?>[]{TestLogging.class},
-                        handler);
+        return (T) Proxy.newProxyInstance(
+                Ioc.class.getClassLoader(),
+                new Class<?>[]{TestLogging.class},
+                handler);
     }
 
     static class MyInvocationHandler implements InvocationHandler {
-        private final TestLogging myClass;
 
-        MyInvocationHandler(TestLogging myClass) {
-            this.myClass = myClass;
+        private final List<Method> methodsWithLogs;
+
+        private final TestLogging testLogging;
+
+        MyInvocationHandler(TestLogging testLogging) {
+            this.methodsWithLogs = new ArrayList<>();
+            this.testLogging = testLogging;
+            checkAnnotations();
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            checkAnnotations(method, args);
-            return method.invoke(myClass, args);
+            if (methodsWithLogs.contains(method)) {
+                createLog(method, args);
+            }
+            return method.invoke(testLogging, args);
         }
 
-        private void checkAnnotations(Method method, Object[] args) {
-            Annotation[] annotations = method.getDeclaredAnnotations();
-            for (Annotation annotation : annotations) {
-                if (annotation instanceof Log) {
-                    createLog(method, args);
+        private void checkAnnotations() {
+            for (Method method : TestLogging.class.getDeclaredMethods()) {
+                Annotation[] annotations = method.getDeclaredAnnotations();
+                for (Annotation annotation : annotations) {
+                    if (annotation instanceof Log) {
+                        methodsWithLogs.add(method);
+                    }
                 }
             }
         }
@@ -69,7 +78,7 @@ public class Ioc {
 
         @Override
         public String toString() {
-            return "MyInvocationHandler{" + "myClass=" + myClass + '}';
+            return "MyInvocationHandler{" + "myClass=" + testLogging + '}';
         }
     }
 
