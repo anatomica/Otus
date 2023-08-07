@@ -24,7 +24,7 @@ public class Ioc {
 
     @SuppressWarnings("unchecked")
     public static <T> T createProxyClass() {
-        InvocationHandler handler = new MyInvocationHandler(new TestLoggingImpl());
+        InvocationHandler handler = new MyInvocationHandler(TestLoggingImpl.class);
         return (T) Proxy.newProxyInstance(
                 Ioc.class.getClassLoader(),
                 new Class<?>[]{TestLogging.class},
@@ -35,11 +35,11 @@ public class Ioc {
 
         private final List<Method> methodsWithLogs;
 
-        private final TestLogging testLogging;
+        private final Class<?> clazz;
 
-        MyInvocationHandler(TestLogging testLogging) {
+        MyInvocationHandler(Class<?> clazz) {
             this.methodsWithLogs = new ArrayList<>();
-            this.testLogging = testLogging;
+            this.clazz = clazz;
             checkAnnotations();
         }
 
@@ -48,7 +48,7 @@ public class Ioc {
             if (methodsWithLogs.contains(method)) {
                 createLog(method, args);
             }
-            return method.invoke(testLogging, args);
+            return method.invoke(clazz.getConstructor().newInstance(), args);
         }
 
         private void checkAnnotations() {
@@ -78,7 +78,7 @@ public class Ioc {
 
         @Override
         public String toString() {
-            return "MyInvocationHandler{" + "myClass=" + testLogging + '}';
+            return "MyInvocationHandler{" + "myClass=" + clazz + '}';
         }
     }
 
