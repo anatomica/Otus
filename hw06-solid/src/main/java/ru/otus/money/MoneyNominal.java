@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.stream.Stream;
 
 @Getter
-public enum MoneyType {
+public enum MoneyNominal {
 
     TEN(10),
 
@@ -17,15 +17,15 @@ public enum MoneyType {
 
     THOUSAND(1000);
 
-    private final Integer value;
+    private final int value;
 
-    MoneyType(Integer value) {
+    MoneyNominal(Integer value) {
         this.value = value;
     }
 
-    public static MoneyType of(Integer type) {
-        return Stream.of(MoneyType.values())
-                .filter(p -> p.getValue().equals(type))
+    public static MoneyNominal of(Integer type) {
+        return Stream.of(MoneyNominal.values())
+                .filter(p -> p.getValue() == type)
                 .findFirst().orElse(null);
     }
 

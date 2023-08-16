@@ -2,9 +2,13 @@ package ru.otus.atm;
 
 import ru.otus.exceptions.NotEnoughMoneyException;
 import ru.otus.money.Money;
-import ru.otus.money.MoneyType;
+import ru.otus.money.MoneyNominal;
+import ru.otus.money.Storage;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyMap;
@@ -14,20 +18,15 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-public class AtmImpl implements Atm {
-
-    private static Map<MoneyType, List<Money>> TOTAL_MONEY;
-
-    private static Map<MoneyType, List<Money>> TEMP_MONEY;
+public class AtmImpl extends Storage implements Atm {
 
     public AtmImpl() {
-        TOTAL_MONEY = new HashMap<>();
-        TEMP_MONEY = new HashMap<>();
+        super();
     }
 
     @Override
     public void addMoney(String moniesStr) {
-        Map<MoneyType, List<Money>> newMoney = getValues(moniesStr);
+        Map<MoneyNominal, List<Money>> newMoney = getValues(moniesStr);
         TOTAL_MONEY.putAll(newMoney);
     }
 
@@ -39,7 +38,7 @@ public class AtmImpl implements Atm {
             final int[] needMoney = {Integer.parseInt(monies)};
             List<Money> moneyList = new ArrayList<>();
 
-            List<Integer> types = Arrays.stream(MoneyType.values()).map(MoneyType::getValue)
+            List<Integer> types = Arrays.stream(MoneyNominal.values()).map(MoneyNominal::getValue)
                     .sorted(comparingInt(Integer::intValue).reversed()).toList();
 
             recalculation(needMoney, moneyList, types);
@@ -52,7 +51,7 @@ public class AtmImpl implements Atm {
     @Override
     public List<Money> getTotal() {
         List<Money> moneyList = new ArrayList<>();
-        Arrays.stream(MoneyType.values()).forEach(type -> {
+        Arrays.stream(MoneyNominal.values()).forEach(type -> {
             List<Money> thisMoneyList = new ArrayList<>(TOTAL_MONEY.getOrDefault(type, new ArrayList<>()));
             if (isNotEmpty(thisMoneyList)) {
                 moneyList.addAll(thisMoneyList);
@@ -65,7 +64,7 @@ public class AtmImpl implements Atm {
     private void recalculation(int[] needMoney, List<Money> moneyList, List<Integer> types) {
         types.forEach(type -> {
             while (needMoney[0] > 0 && needMoney[0] >= type) {
-                MoneyType thisType = MoneyType.of(type);
+                MoneyNominal thisType = MoneyNominal.of(type);
                 List<Money> thisMoneyList = new ArrayList<>(TOTAL_MONEY.getOrDefault(thisType, new ArrayList<>()));
                 if (isNotEmpty(thisMoneyList)) {
                     moneyList.add(thisMoneyList.get(0));
@@ -93,10 +92,10 @@ public class AtmImpl implements Atm {
         throw new NotEnoughMoneyException("There are no necessary banknotes in the ATM!");
     }
 
-    private Map<MoneyType, List<Money>> getValues(String moneysStr) {
+    private Map<MoneyNominal, List<Money>> getValues(String moneysStr) {
         if (isNotBlank(moneysStr)) {
             List<Integer> intValues = Stream.of(deleteWhitespace(moneysStr).split(",")).map(Integer::parseInt).toList();
-            return intValues.stream().collect(groupingBy(MoneyType::of, collectingAndThen(toList(), moneys ->
+            return intValues.stream().collect(groupingBy(MoneyNominal::of, collectingAndThen(toList(), moneys ->
                     moneys.stream().map(m -> Money.builder().value(m).build()).toList())));
         }
         return emptyMap();
