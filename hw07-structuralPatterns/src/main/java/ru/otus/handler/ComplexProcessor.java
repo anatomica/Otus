@@ -29,7 +29,7 @@ public class ComplexProcessor implements Handler {
                 errorHandler.accept(ex);
             }
         }
-        notify(newMsg);
+        notify(msg);
         return newMsg;
     }
 

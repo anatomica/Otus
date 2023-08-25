@@ -2,21 +2,19 @@ package ru.otus.handler;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.otus.model.Message;
 import ru.otus.listener.Listener;
+import ru.otus.model.Message;
 import ru.otus.processor.Processor;
+import ru.otus.processor.ProcessorExceptions;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 class ComplexProcessorTest {
 
@@ -92,6 +90,28 @@ class ComplexProcessorTest {
 
         //then
         verify(listener, times(1)).onUpdated(message);
+    }
+
+    @Test
+    @DisplayName("Тестируем обработку исключения на четной секунде")
+    void handleExceptionTest2() {
+        //given
+        Message message = new Message.Builder(1L).field8("field8").build();
+
+        List<Processor> processors = List.of(new ProcessorExceptions());
+        var complexProcessor = new ComplexProcessor(processors, (ex) -> {
+            throw new TestException(ex.getMessage());
+        });
+
+        //when
+        assertThrows(TestException.class, () -> getHandle(message, complexProcessor));
+    }
+
+    private static void getHandle(Message message, ComplexProcessor complexProcessor) {
+        LocalDateTime stopTime = LocalDateTime.now().plusSeconds(60);
+        do {
+            complexProcessor.handle(message);
+        } while (LocalDateTime.now().isBefore(stopTime));
     }
 
     private static class TestException extends RuntimeException {
