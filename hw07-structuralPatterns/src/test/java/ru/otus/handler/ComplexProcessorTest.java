@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import ru.otus.listener.Listener;
 import ru.otus.model.Message;
 import ru.otus.processor.Processor;
-import ru.otus.processor.ProcessorExceptions;
+import ru.otus.processor.homework.ProcessorExceptions;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -94,7 +94,7 @@ class ComplexProcessorTest {
 
     @Test
     @DisplayName("Тестируем обработку исключения на четной секунде")
-    void handleExceptionTest2() {
+    void processorExceptionTest() {
         //given
         Message message = new Message.Builder(1L).field8("field8").build();
 

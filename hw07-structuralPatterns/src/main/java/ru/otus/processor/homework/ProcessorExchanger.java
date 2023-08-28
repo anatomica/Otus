@@ -1,7 +1,8 @@
-package ru.otus.processor;
+package ru.otus.processor.homework;
 
 import ru.otus.model.Message;
 import ru.otus.model.ObjectForMessage;
+import ru.otus.processor.Processor;
 
 import java.util.List;
 
@@ -16,19 +17,9 @@ public class ProcessorExchanger implements Processor {
             ObjectForMessage field11 = new ObjectForMessage();
             field11.setData(List.of((String) msg.getField11()));
 
-            return new Message.Builder(msg.getId())
-                    .field1(msg.getField1())
-                    .field2(msg.getField2())
-                    .field3(msg.getField3())
-                    .field4(msg.getField4())
-                    .field5(msg.getField5())
-                    .field6(msg.getField6())
-                    .field7(msg.getField7())
-                    .field8(msg.getField8())
-                    .field9(msg.getField9())
-                    .field10(msg.getField10())
-                    .field11(field13)
-                    .field13(field11)
+            return new Message(msg.getId(), msg.getField1(), msg.getField2(), msg.getField3(), msg.getField4(), msg.getField5(),
+                    msg.getField6(), msg.getField7(), msg.getField8(), msg.getField9(), msg.getField10(), field13, field11)
+                    .toBuilder()
                     .build();
         }
 
