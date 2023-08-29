@@ -15,7 +15,7 @@ public class Message {
     private final Object field11;
     private final ObjectForMessage field13;
 
-    public Message(long id, String field1, String field2, String field3, String field4, String field5, String field6,
+    private Message(long id, String field1, String field2, String field3, String field4, String field5, String field6,
                    String field7, String field8, String field9, String field10, Object field11, ObjectForMessage field13) {
         this.id = id;
         this.field1 = field1;

@@ -30,11 +30,8 @@ public class HistoryListener implements Listener, HistoryReader {
         throw new UnsupportedOperationException();
     }
 
-    private Message getNewMessage(Message msg) {
-        return new Message(msg.getId(), msg.getField1(), msg.getField2(), msg.getField3(), msg.getField4(), msg.getField5(), msg.getField6(),
-                msg.getField7(), msg.getField8(), msg.getField9(), msg.getField10(), msg.getField11(), getNewMessage(msg.getField13()))
-                .toBuilder()
-                .build();
+    private Message getNewMessage(Message message) {
+        return message.toBuilder().field13(getNewMessage(message.getField13())).build();
     }
 
     private ObjectForMessage getNewMessage(ObjectForMessage field13) {

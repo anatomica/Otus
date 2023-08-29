@@ -11,16 +11,13 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 public class ProcessorExchanger implements Processor {
 
     @Override
-    public Message process(Message msg) {
-        if (msg != null && isNotEmpty(msg.getField13().getData())) {
-            String field13 = msg.getField13().getData().get(0);
+    public Message process(Message message) {
+        if (message != null && isNotEmpty(message.getField13().getData())) {
+            String field13 = message.getField13().getData().get(0);
             ObjectForMessage field11 = new ObjectForMessage();
-            field11.setData(List.of((String) msg.getField11()));
+            field11.setData(List.of((String) message.getField11()));
 
-            return new Message(msg.getId(), msg.getField1(), msg.getField2(), msg.getField3(), msg.getField4(), msg.getField5(),
-                    msg.getField6(), msg.getField7(), msg.getField8(), msg.getField9(), msg.getField10(), field13, field11)
-                    .toBuilder()
-                    .build();
+            return message.toBuilder().field11(field13).field13(field11).build();
         }
 
         return null;

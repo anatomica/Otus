@@ -3,13 +3,17 @@ package ru.otus.processor.homework;
 import ru.otus.model.Message;
 import ru.otus.processor.Processor;
 
-import java.time.LocalDateTime;
-
 public class ProcessorExceptions implements Processor {
+
+    private final DateTimeProvider dateTimeProvider;
+
+    public ProcessorExceptions(DateTimeProvider dateTimeProvider) {
+        this.dateTimeProvider = dateTimeProvider;
+    }
 
     @Override
     public Message process(Message message) {
-        int seconds = LocalDateTime.now().getSecond();
+        int seconds = dateTimeProvider.getDateTime().getSecond();
         if (seconds % 2 == 0) {
             throw new ProcessorException("ProcessorException");
         }

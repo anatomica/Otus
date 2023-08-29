@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import ru.otus.listener.Listener;
 import ru.otus.model.Message;
 import ru.otus.processor.Processor;
+import ru.otus.processor.homework.DateTimeProvider;
 import ru.otus.processor.homework.ProcessorExceptions;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -97,21 +99,23 @@ class ComplexProcessorTest {
     void processorExceptionTest() {
         //given
         Message message = new Message.Builder(1L).field8("field8").build();
+        DateTimeProvider dateTime = mock(DateTimeProvider.class);
 
-        List<Processor> processors = List.of(new ProcessorExceptions());
-        var complexProcessor = new ComplexProcessor(processors, (ex) -> {
-            throw new TestException(ex.getMessage());
-        });
+        if (LocalDateTime.now().getSecond() % 2 == 0) {
+            List<Processor> processors = List.of(new ProcessorExceptions(dateTime));
+            var complexProcessor = new ComplexProcessor(processors, (ex) -> {
+                throw new TestException(ex.getMessage());
+            });
 
-        //when
-        assertThrows(TestException.class, () -> getHandle(message, complexProcessor));
-    }
+            //when
+            assertThrows(TestException.class, () -> complexProcessor.handle(message));
+        } else {
+            List<Processor> processors = List.of(new ProcessorExceptions(dateTime));
+            var complexProcessor = new ComplexProcessor(processors, ex -> {});
 
-    private static void getHandle(Message message, ComplexProcessor complexProcessor) {
-        LocalDateTime stopTime = LocalDateTime.now().plusSeconds(60);
-        do {
-            complexProcessor.handle(message);
-        } while (LocalDateTime.now().isBefore(stopTime));
+            //when
+            assertDoesNotThrow(() -> complexProcessor.handle(message));
+        }
     }
 
     private static class TestException extends RuntimeException {
