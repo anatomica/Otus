@@ -100,9 +100,9 @@ class ComplexProcessorTest {
         //given
         Message message = new Message.Builder(1L).field8("field8").build();
         DateTimeProvider dateTime = mock(DateTimeProvider.class);
+        List<Processor> processors = List.of(new ProcessorExceptions(dateTime));
 
         if (LocalDateTime.now().getSecond() % 2 == 0) {
-            List<Processor> processors = List.of(new ProcessorExceptions(dateTime));
             var complexProcessor = new ComplexProcessor(processors, (ex) -> {
                 throw new TestException(ex.getMessage());
             });
@@ -110,7 +110,6 @@ class ComplexProcessorTest {
             //when
             assertThrows(TestException.class, () -> complexProcessor.handle(message));
         } else {
-            List<Processor> processors = List.of(new ProcessorExceptions(dateTime));
             var complexProcessor = new ComplexProcessor(processors, ex -> {});
 
             //when
