@@ -35,6 +35,9 @@ allprojects {
     val lombok: String by project
     val commonsLang3: String by project
     val commonsCollections4: String by project
+    val jmh: String by project
+    val asm: String by project
+    val glassfishJson: String by project
 
     apply(plugin = "io.spring.dependency-management")
     dependencyManagement {
@@ -49,6 +52,10 @@ allprojects {
             dependency("org.projectlombok:lombok:$lombok")
             dependency("org.apache.commons:commons-lang3:$commonsLang3")
             dependency("org.apache.commons:commons-collections4:$commonsCollections4")
+            dependency("org.openjdk.jmh:jmh-core:$jmh")
+            dependency("org.openjdk.jmh:jmh-generator-annprocess:$jmh")
+            dependency("org.ow2.asm:asm-commons:$asm")
+            dependency("org.glassfish:jakarta.json:$glassfishJson")
         }
     }
 
